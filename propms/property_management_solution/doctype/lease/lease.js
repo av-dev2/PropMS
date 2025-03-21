@@ -43,7 +43,39 @@ frappe.ui.form.on('Lease', {
 				}
 			}
 		});
-	}
+	},
+	validate: function(frm) {
+        frappe.call({
+            method: "frappe.client.get",
+            args: {
+                doctype: "Property Management Settings"
+            },
+            callback: function(r) {
+                if (r.message) {
+                    let settings = r.message;
+                    if (settings.make_single_invoice_on_lease && !frm.doc.end_date) {
+                        frm.clear_table('lease_invoice_schedule');  // Clear existing entries
+                        $.each(frm.doc.lease_item || [], function(i, row) {
+                            let invoice_entry = frm.add_child('lease_invoice_schedule');
+                            invoice_entry.lease_item_name = row.lease_item;
+                            invoice_entry.rate = row.amount;
+                            invoice_entry.paid_by = row.paid_by;
+                            invoice_entry.date_to_invoice = frm.doc.start_date; // Use start date as invoice date
+                            invoice_entry.qty = 1;  // Always set quantity to 1
+                        });
+                        frm.refresh_field('lease_invoice_schedule'); // Refresh the child table
+                    } else {
+                        frappe.msgprint({
+                            title: __("Validation Error"),
+                            message: __("You must set an End Date if 'Make Single Invoice on Lease' is enabled in Property Management Settings."),
+                            indicator: "red"
+                        });
+                        frappe.validated = false;
+                    }
+                }
+            }
+        });
+    }
 });
 
 var make_lease_invoice_schedule = function(frm){
