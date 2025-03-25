@@ -12,13 +12,12 @@
   "column_break_5",
   "security_deposit_payment_type",
   "damage_charge_item",
-  "section_break_8",
-  "column_break_10",
   "section_break_9",
   "invoice_start_date",
   "section_break_12",
   "group_maintenance_job_items",
   "submit_maintenance_invoice",
+  "make_single_invoice_on_lease",
   "column_break_14",
   "maintenance_item_group",
   "section_break_17",
@@ -64,14 +63,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_8",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_10",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "section_break_12",
    "fieldtype": "Section Break"
   },
@@ -109,12 +100,18 @@
    "fieldname": "invoice_start_date",
    "fieldtype": "Date",
    "label": "Invoice Start Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "make_single_invoice_on_lease",
+   "fieldtype": "Check",
+   "label": "Make single invoice on lease"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-27 12:28:52.887903",
+ "modified": "2025-03-19 17:31:29.146864",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
@@ -143,5 +140,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
