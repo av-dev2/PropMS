@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_import": 1,
  "autoname": "format:{property}-{#####}",
  "creation": "2018-05-01 22:11:38.457329",
@@ -26,6 +27,7 @@
   "lease_dates_section",
   "start_date",
   "column_break_13",
+  "skip_end_date",
   "end_date",
   "frequency",
   "lease_item_table_section",
@@ -318,12 +320,20 @@
    "fieldtype": "Select",
    "label": "Lease Status",
    "options": "\nActive\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating"
+  },
+  {
+   "default": "0",
+   "fieldname": "skip_end_date",
+   "fieldtype": "Check",
+   "label": "Skip End Date"
   }
  ],
- "modified": "2021-06-09 17:20:19.067591",
+ "links": [],
+ "modified": "2025-03-25 18:41:46.138062",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Lease",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -353,5 +363,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
