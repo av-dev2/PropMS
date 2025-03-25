@@ -1,0 +1,86 @@
+{
+ "add_total_row": 0,
+ "columns": [
+  {
+   "fieldname": " lease_customer",
+   "fieldtype": "Link",
+   "label": " Lease Customer",
+   "options": "Customer",
+   "width": 0
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": " Lease Start Date",
+   "width": 0
+  },
+  {
+   "fieldname": " end_date",
+   "fieldtype": "Date",
+   "label": " End Date",
+   "width": 0
+  },
+  {
+   "fieldname": " Lease Status",
+   "fieldtype": "Select",
+   "label": "lease_status",
+   "width": 0
+  }
+ ],
+ "creation": "2025-03-12 09:30:00.316727",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "Company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "mandatory": 0,
+   "options": "Company",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": " Property",
+   "fieldtype": "Link",
+   "label": " Property",
+   "mandatory": 0,
+   "options": "\nProperty",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "lease_date",
+   "fieldtype": "Date",
+   "label": " Lease Date",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "javascript": "function generatePropertyStatusReport() {\r\n  // Get data from the lease form\r\n  const companyName = document.getElementById('companyName').value;\r\n  const property = document.getElementById('property').value;\r\n  const lesseeStatus = document.getElementById('lesseeStatus').value;\r\n  // ... other data from the lease form\r\n\r\n  // Create a report object\r\n  const report = {\r\n    companyName: companyName,\r\n    property: property,\r\n    lesseeStatus: lesseeStatus,\r\n    // ... other property data\r\n  };\r\n\r\n  // Generate HTML for the report\r\n  const reportHtml = `\r\n    <h2>Property Status Report</h2>\r\n    <ul>\r\n      <li>Company Name: ${report.companyName}</li>\r\n      <li>Property: ${report.property}</li>\r\n      <li>Lessee Status: ${report.lesseeStatus}</li>\r\n      </ul>\r\n  `;\r\n\r\n  // Display the report (you can customize this section)\r\n  const reportContainer = document.getElementById('reportContainer');\r\n  reportContainer.innerHTML = reportHtml;\r\n}\r\n",
+ "json": "{}",
+ "letter_head": "",
+ "letterhead": null,
+ "modified": "2025-03-12 09:30:00.316727",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Property Status Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Lease",
+ "report_name": "Property Status Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "Property Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Lease Manager"
+  }
+ ],
+ "timeout": 0
+}

@@ -1,20 +1,58 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Your Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lease\",\"col\":4}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Property\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Documents\",\"col\":5}}]",
- "creation": "2020-12-28 17:56:01.070160",
+ "content": "[{\"id\":\"HaSFT_63sT\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Summary Tables <br></b></span>\",\"col\":12}},{\"id\":\"ocKJbkl7Uq\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Properties\",\"col\":4}},{\"id\":\"74IgMjpDlT\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Leases\",\"col\":4}},{\"id\":\"7IQ5o5tu3V\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Shortcuts</span>\",\"col\":12}},{\"id\":\"mmDDbmrwfx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Leases\",\"col\":4}},{\"id\":\"Ko3y3DNVaO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Vacting Leases\",\"col\":4}},{\"id\":\"lAcUHIxxmt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Unmaterialised Leases\",\"col\":4}},{\"id\":\"Lvkou7FPSj\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Available Properties\",\"col\":4}},{\"id\":\"OCXSFF46BT\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Vacating Properties\",\"col\":4}},{\"id\":\"l-d27Twl0h\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Booked Properties\",\"col\":4}},{\"id\":\"TFO4ffcN4B\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expired Leases\",\"col\":4}},{\"id\":\"8StaNmlZu7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Terminated Leases\",\"col\":4}},{\"id\":\"ce2zDTCx9A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pre-mature Lease Exits\",\"col\":4}},{\"id\":\"Kcd7OKvXzM\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lost Keys\",\"col\":4}},{\"id\":\"zSgvRHZOiy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Keys in Posession\",\"col\":4}},{\"id\":\"Dpf3B4OldR\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Assigned Keys\",\"col\":4}},{\"id\":\"R5oN93DdB9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lost Tools\",\"col\":4}},{\"id\":\"bArhtanAEk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Tools in Posession\",\"col\":4}},{\"id\":\"lqYekUAd7m\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Assigned Tools\",\"col\":4}},{\"id\":\"nt1DT-vX4o\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Documents</b></span>\",\"col\":12}},{\"id\":\"4OvHczRAAh\",\"type\":\"card\",\"data\":{\"card_name\":\"Property Management\",\"col\":4}},{\"id\":\"bjKUDrqDcX\",\"type\":\"card\",\"data\":{\"card_name\":\"Utilities and Tools\",\"col\":4}},{\"id\":\"-bjzyOR-Eh\",\"type\":\"card\",\"data\":{\"card_name\":\"Keys and Security\",\"col\":4}},{\"id\":\"5Dhgd1tVx2\",\"type\":\"card\",\"data\":{\"card_name\":\"Outsourcing\",\"col\":4}},{\"id\":\"a4xwDEBSQp\",\"type\":\"card\",\"data\":{\"card_name\":\"Monitoring and Maintanance\",\"col\":4}},{\"id\":\"mzh_YnVPt5\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports <br></b></span>\",\"col\":12}},{\"id\":\"vPLCvgOuuL\",\"type\":\"card\",\"data\":{\"card_name\":\"Monitoring Reports\",\"col\":4}},{\"id\":\"UDhmPoiQbA\",\"type\":\"card\",\"data\":{\"card_name\":\"Attendance Reports\",\"col\":4}}]",
+ "creation": "2025-03-12 16:48:28.235868",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "hide_custom": 0,
  "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
  "label": "Real Estate Management",
  "links": [
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Documents",
-   "link_count": 2,
+   "label": "Property Management",
+   "link_count": 5,
+   "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Tanzania",
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Leases",
+   "link_count": 0,
+   "link_to": "Lease",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Exits",
+   "link_count": 0,
+   "link_to": "Exit",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unit Type",
+   "link_count": 0,
+   "link_to": "Unit Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -24,39 +62,468 @@
    "link_to": "Apartment Status",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Tanzania",
    "type": "Link"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Daily Checklist Detail",
+   "label": "Property Management Settings",
    "link_count": 0,
-   "link_to": "Daily Checklist Detail",
+   "link_to": "Property Management Settings",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Monitoring and Maintanance",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Checklist",
+   "link_count": 0,
+   "link_to": "Daily Checklist",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Checklist Checkup Area",
+   "link_count": 0,
+   "link_to": "Checklist Checkup Area",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Custom Error Log",
+   "link_count": 0,
+   "link_to": "Custom Error Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Keys and Security",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Key Set",
+   "link_count": 0,
+   "link_to": "Key Set",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Key Set Detail",
+   "link_count": 0,
+   "link_to": "Key Set Detail",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Guard Shift",
+   "link_count": 0,
+   "link_to": "Guard Shift",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Security Attendance",
+   "link_count": 0,
+   "link_to": "Security Attendance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Shift",
+   "link_count": 0,
+   "link_to": "Outsourcing Shift",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Category",
+   "link_count": 0,
+   "link_to": "Outsourcing Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Attendance",
+   "link_count": 0,
+   "link_to": "Outsourcing Attendance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Utilities and Tools",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insurance",
+   "link_count": 0,
+   "link_to": "Insurance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Meter",
+   "link_count": 0,
+   "link_to": "Meter",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Meter Reading",
+   "link_count": 0,
+   "link_to": "Meter Reading",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tool Item Set",
+   "link_count": 0,
+   "link_to": "Tool Item Set",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tool Item Record",
+   "link_count": 0,
+   "link_to": "Tool Item Record",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Attendance Reports",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Security Attendance Report",
+   "link_count": 0,
+   "link_to": "Security Attendance Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Security Attendance",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Attendance Reports",
+   "link_count": 0,
+   "link_to": "Outsourcing Attendance",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Outsourcing Attendance",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Monitoring Reports",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer Reports",
+   "link_count": 0,
+   "link_to": "Customer Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Lease",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Property Status Reports",
+   "link_count": 0,
+   "link_to": "Property Status",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Lease",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lease Information Reports",
+   "link_count": 0,
+   "link_to": "Lease Information",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Lease",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pending Signed Agreement Reports",
+   "link_count": 0,
+   "link_to": "Pending Signed Agreement",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Lease",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stamp Duty Paid by Tenant Reports",
+   "link_count": 0,
+   "link_to": "Stamp Duty Paid by Tenant",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Tanzania",
+   "report_ref_doctype": "Lease",
    "type": "Link"
   }
  ],
- "modified": "2022-12-11 18:45:25.174279",
- "modified_by": "av-dev1@aakvatech.com",
+ "modified": "2025-03-12 17:37:10.271781",
+ "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Real Estate Management",
- "owner": "info@aakvatech.com",
+ "number_cards": [],
+ "owner": "Administrator",
  "public": 1,
- "quick_lists": [],
+ "quick_lists": [
+  {
+   "document_type": "Property",
+   "label": "Properties",
+   "quick_list_filter": "[]"
+  },
+  {
+   "document_type": "Lease",
+   "label": "Leases",
+   "quick_list_filter": "[]"
+  }
+ ],
  "roles": [],
  "sequence_id": 374.0,
  "shortcuts": [
   {
-   "doc_view": "",
-   "label": "Lease",
-   "link_to": "Lease",
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Expired Leases",
+   "link_to": "Exit",
+   "stats_filter": "[[\"Exit\",\"exit_type\",\"=\",\"Expiry\",false]]",
    "type": "DocType"
   },
   {
    "doc_view": "",
-   "label": "Property",
+   "label": "Active Leases",
+   "link_to": "Lease",
+   "stats_filter": "[[\"Lease\",\"lease_status\",\"=\",\"Active\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Terminated Leases",
+   "link_to": "Exit",
+   "stats_filter": "[[\"Exit\",\"exit_type\",\"=\",\"Termination\",false]]",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Vacting Leases",
+   "link_to": "Lease",
+   "stats_filter": "[[\"Lease\",\"lease_status\",\"=\",\"Vacating\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pre-mature Lease Exits",
+   "link_to": "Exit",
+   "stats_filter": "[[\"Exit\",\"exit_type\",\"=\",\"Pre-mature\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Unmaterialised Leases",
+   "link_to": "Lease",
+   "stats_filter": "[[\"Lease\",\"lease_status\",\"=\",\"Not Materialized\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Available Properties",
    "link_to": "Property",
+   "stats_filter": "[[\"Property\",\"status\",\"=\",\"Available\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Booked Properties",
+   "link_to": "Property",
+   "stats_filter": "[[\"Property\",\"status\",\"=\",\"Booked\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Vacating Properties",
+   "link_to": "Property",
+   "stats_filter": "[[\"Property\",\"status\",\"=\",\"Vacating\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Lost Keys",
+   "link_to": "Key Set",
+   "stats_filter": "[[\"Key Set\",\"status\",\"=\",\"Lost\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Keys in Posession",
+   "link_to": "Tool Item Set",
+   "stats_filter": "[[\"Tool Item Set\",\"status\",\"=\",\"In\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Assigned Keys",
+   "link_to": "Key Set",
+   "stats_filter": "[[\"Key Set\",\"status\",\"=\",\"Out\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Lost Tools",
+   "link_to": "Tool Item Set",
+   "stats_filter": "[[\"Tool Item Set\",\"status\",\"=\",\"Lost\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Tools in Posession",
+   "link_to": "Tool Item Set",
+   "stats_filter": "[[\"Tool Item Set\",\"status\",\"=\",\"In\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Assigned Tools",
+   "link_to": "Tool Item Set",
+   "stats_filter": "[[\"Tool Item Set\",\"status\",\"=\",\"Out\",false]]",
    "type": "DocType"
   }
  ],
