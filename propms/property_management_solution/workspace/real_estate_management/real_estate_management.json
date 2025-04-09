@@ -5,55 +5,14 @@
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
+ "for_user": "",
  "hide_custom": 0,
+ "icon": "retail",
  "idx": 0,
- "indicator_color": "green",
+ "indicator_color": "",
  "is_hidden": 0,
  "label": "Real Estate Management",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Outsourcing",
-   "link_count": 3,
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "Tanzania",
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Outsourcing Shift",
-   "link_count": 0,
-   "link_to": "Outsourcing Shift",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "Tanzania",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Outsourcing Category",
-   "link_count": 0,
-   "link_to": "Outsourcing Category",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "Tanzania",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Outsourcing Attendance",
-   "link_count": 0,
-   "link_to": "Outsourcing Attendance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "Tanzania",
-   "type": "Link"
-  },
   {
    "hidden": 0,
    "is_query_report": 0,
@@ -378,14 +337,57 @@
    "only_for": "",
    "report_ref_doctype": "Outsourcing Attendance",
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Shift",
+   "link_count": 0,
+   "link_to": "Outsourcing Shift",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Category",
+   "link_count": 0,
+   "link_to": "Outsourcing Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outsourcing Attendance",
+   "link_count": 0,
+   "link_to": "Outsourcing Attendance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
   }
  ],
- "modified": "2025-03-28 10:03:25.413242",
+ "modified": "2025-04-09 10:05:11.346682",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Real Estate Management",
  "number_cards": [],
  "owner": "Administrator",
+ "parent_page": "",
  "public": 1,
  "quick_lists": [
   {
