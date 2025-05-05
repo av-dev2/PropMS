@@ -214,7 +214,8 @@ scheduler_events = {
         "propms.auto_custom.statusChangeBeforeLeaseExpire",
         "propms.auto_custom.statusChangeAfterLeaseExpire",
     ],
-    "cron": {"00 12 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreate"]},
+    "cron": {"00 12 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreate"]},    
+    "cron": {"00 06 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreateNextMonth"]},
 }
 
 
