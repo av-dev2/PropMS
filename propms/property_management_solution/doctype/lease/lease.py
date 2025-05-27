@@ -55,7 +55,7 @@ class Lease(Document):
                     frappe.msgprint("Property set to Off Lease in 3 Months")
             else:
                 frappe.db.set_value(
-                    "Property", self.property, "status", "OnLease"
+                    "Property", self.property, "status", "On Lease"
                 )
             frappe.msgprint("Property set to On Lease")
         except Exception as e:
