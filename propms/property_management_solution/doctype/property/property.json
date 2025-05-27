@@ -361,6 +361,7 @@
   }
  ],
  "sort_field": "modified",
+ "show_name_in_global_search": 1,
  "sort_order": "DESC",
  "track_changes": 1
 }
