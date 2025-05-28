@@ -8,7 +8,7 @@ from propms.auto_custom import get_latest_active_lease
 from erpnext.controllers.accounts_controller import get_taxes_and_charges
 
 
-def make_sales_invoice(doc, for_self_consumption=None):
+def make_transaction(doc, for_self_consumption=False):
     is_grouped = frappe.db.get_value(
         "Property Management Settings", None, "group_maintenance_job_items"
     )
@@ -22,16 +22,64 @@ def make_sales_invoice(doc, for_self_consumption=None):
     submit_maintenance_invoice = frappe.db.get_value(
         "Property Management Settings", None, "submit_maintenance_invoice"
     )
+    # TODO: Remove this after stability of Stock Entry
     self_consumption_customer = frappe.db.get_value(
         "Property Management Settings", None, "self_consumption_customer"
     )
     if not submit_maintenance_invoice:
         submit_maintenance_invoice = 0
     submit_maintenance_invoice = int(submit_maintenance_invoice)
-    user_remarks = "Sales invoice for Maintenance Job Card {0}".format(doc.name)
+    user_remarks = "Transaction for Maintenance Job Card {0}".format(doc.name)
     lease = get_latest_active_lease(doc.property_name)
 
-    def _make_sales_invoice(items_list=None, pos=None, self_customer=None):
+    def make_stock_entry(items_list=None, pos=None):
+        if not len(items_list) > 0:
+            return
+
+        # Create a stock entry for purpose material issue
+        stock_entry_doc = frappe.get_doc(
+            {
+                "doctype": "Stock Entry",
+                "stock_entry_type": "Material Issue",
+                "purpose": "Material Issue",
+                "posting_date": today(),
+                "remarks": user_remarks,
+                "company": doc.company,
+                "items": items_list,
+                "from_warehouse": frappe.db.get_single_value("Stock Settings", "default_warehouse"),
+            }
+        )
+        if stock_entry_doc:
+            stock_entry_doc.insert(ignore_permissions=True)
+            stock_entry_url = frappe.utils.get_url_to_form(
+                stock_entry_doc.doctype, stock_entry_doc.name
+            )
+            se_msgprint = "Stock Entry Created <a href='{0}'>{1}</a>".format(
+                stock_entry_url, stock_entry_doc.name
+            )
+            frappe.flags.ignore_account_permission = True
+            if submit_maintenance_invoice == 1 and not pos:
+                stock_entry_doc.submit()
+            if pos:
+                frappe.throw(_("POS Stock Entry cannot be created for Self Consumption items"))
+            frappe.msgprint(_(se_msgprint))
+            for item_row in doc.materials_billed:
+                if (
+                    item_row.item
+                    and item_row.quantity
+                    and item_row.invoiced == 1
+                    and not item_row.stock_entry
+                ):
+                    item_row.stock_entry = stock_entry_doc.name
+                    frappe.db.set_value(
+                        "Issue Materials Billed",
+                        item_row.name,
+                        "stock_entry",
+                        stock_entry_doc.name,
+                    )
+                    frappe.db.commit()
+
+    def make_sales_invoice(items_list=None, pos=None, self_customer=None):
         if not len(items_list) > 0 or not doc.customer:
             return
         default_tax_template = frappe.db.get_value(
@@ -140,6 +188,7 @@ def make_sales_invoice(doc, for_self_consumption=None):
         invoice_doc.submit()
 
     if is_grouped == 1:
+        # Make grouped Sales Invoice for POS items
         items = []
         for item_row in doc.materials_billed:
             if (
@@ -158,8 +207,9 @@ def make_sales_invoice(doc, for_self_consumption=None):
                 )
                 items.append(item_dict)
                 item_row.invoiced = 1
-        _make_sales_invoice(items, True)
+        make_sales_invoice(items, pos=True)
 
+        # Make grouped items Sales Invoice for non-POS items
         items = []
         for item_row in doc.materials_billed:
             if (
@@ -178,29 +228,10 @@ def make_sales_invoice(doc, for_self_consumption=None):
                 )
                 items.append(item_dict)
                 item_row.invoiced = 1
-        _make_sales_invoice(items, False)
+        make_sales_invoice(items, pos=False)
 
-        if for_self_consumption:
-            items = []
-            for item_row in doc.materials_billed:
-                if (
-                    item_row.item
-                    and item_row.quantity
-                    and item_row.material_status == "Self Consumption"
-                    and not item_row.sales_invoice
-                ):
-                    item_dict = dict(
-                        item_code=item_row.item,
-                        qty=item_row.quantity,
-                        rate=item_row.rate,
-                        cost_center=cost_center,
-                        item_tax_template=get_taxes_template(item_row.item),
-                    )
-                    items.append(item_dict)
-                    item_row.invoiced = 1
-            _make_sales_invoice(items, False, True)
-
-    else:
+    else: # Not grouped
+        # Make Sales Invoice for non-grouped items
         for item_row in doc.materials_billed:
             items = []
             if (
@@ -222,28 +253,26 @@ def make_sales_invoice(doc, for_self_consumption=None):
                     pos = True
                 else:
                     pos = False
-                _make_sales_invoice(items, pos)
+                make_sales_invoice(items, pos)
 
-        if for_self_consumption:
-            for item_row in doc.materials_billed:
-                items = []
-                if (
-                    item_row.item
-                    and item_row.quantity
-                    and item_row.material_status == "Self Consumption"
-                    and not item_row.sales_invoice
-                ):
-                    item_dict = dict(
-                        item_code=item_row.item,
-                        qty=item_row.quantity,
-                        rate=item_row.rate,
-                        cost_center=cost_center,
-                        item_tax_template=get_taxes_template(item_row.item),
-                    )
-                    items.append(item_dict)
-                    item_row.invoiced = 1
-                _make_sales_invoice(items, False, True)
-
+    # Make Stock Entry for Self Consumption items
+    if for_self_consumption and doc.status == "Closed":
+        items = []
+        for item_row in doc.materials_billed:
+            if (
+                item_row.item
+                and item_row.quantity
+                and item_row.material_status == "Self Consumption"
+                and not item_row.stock_entry
+            ):
+                item_dict = dict(
+                    item_code=item_row.item,
+                    qty=item_row.quantity,
+                    rate=item_row.rate,
+                    cost_center=cost_center,
+                )
+                items.append(item_dict)
+        make_stock_entry(items, False)
 
 @frappe.whitelist()
 def get_item_rate(item, customer):
@@ -282,9 +311,9 @@ def validate_materials_required(doc):
 
 def validate(doc, method):
     validate_materials_required(doc)
-    make_sales_invoice(doc, False)
+    make_transaction(doc, for_self_consumption=False)
     if doc.status == "Closed":
-        make_sales_invoice(doc, True)
+        make_transaction(doc, for_self_consumption=True)
 
 
 def get_taxes_template(item_code):
