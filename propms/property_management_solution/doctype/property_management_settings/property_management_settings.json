@@ -18,6 +18,8 @@
   "group_maintenance_job_items",
   "submit_maintenance_invoice",
   "make_single_invoice_on_lease",
+  "make_invoice_schedule_up_to_tomorrow_only",
+  "use_valid_from_date",
   "column_break_14",
   "maintenance_item_group",
   "section_break_17",
@@ -106,12 +108,24 @@
    "fieldname": "make_single_invoice_on_lease",
    "fieldtype": "Check",
    "label": "Make single invoice on lease"
+  },
+  {
+   "default": "0",
+   "fieldname": "make_invoice_schedule_up_to_tomorrow_only",
+   "fieldtype": "Check",
+   "label": "Make invoice schedule up to tomorrow only"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_valid_from_date",
+   "fieldtype": "Check",
+   "label": "Use Valid From Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-03-19 17:31:29.146864",
+ "modified": "2025-06-09 09:50:07.957232",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
@@ -138,6 +152,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
