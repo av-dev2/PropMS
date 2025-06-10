@@ -6,7 +6,13 @@ from frappe.query_builder import DocType
 
 @frappe.whitelist()
 def make_lease_invoice_schedule():
+    # First check if make_invoice_schedule_up_to_tomorrow_only is enabled
     settings = frappe.get_single("Property Management Settings")
+    make_schedule_up_to_tomorrow = settings.get("make_invoice_schedule_up_to_tomorrow_only", 0)
+    if not make_schedule_up_to_tomorrow:
+        return
+        
+    # Proceed with other computations only if the setting is enabled
     invoice_start_date = getdate(settings.invoice_start_date)
     use_valid_from_date = settings.use_valid_from_date
     today_date = getdate(today())
@@ -26,9 +32,9 @@ def make_lease_invoice_schedule():
         try:
             lease = frappe.get_doc("Lease", lease_name)
 
-            lease_end = getdate(lease.end_date) if lease.end_date else add_days(today_date, 1)
-            lease_start = getdate(lease.start_date) if lease.start_date else None
-            if not lease_start:
+            schedule_end = getdate(lease.end_date) if lease.end_date else add_days(today_date, 1)
+            schedule_start = getdate(lease.start_date) if lease.start_date else None
+            if not schedule_start:
                 continue  # skip if no start_date
 
             # Clean up schedule entries for removed lease items
@@ -59,27 +65,23 @@ def make_lease_invoice_schedule():
 
                 invoice_qty = float(freq)
 
-                # Determine start date and amount based on settings
-                item_start_date = lease_start
-                item_amount = item.amount
-
                 if use_valid_from_date and item.valid_from:
-                    item_amount = item.amount_increase or item.amount
+                    item_amount = item.amount
 
-                invoice_date = item_start_date
+                invoice_date = schedule_start
 
                 # Skip invoice periods before the global invoice_start_date
-                while lease_end >= invoice_date and invoice_date < invoice_start_date:
+                while schedule_end >= invoice_date and invoice_date < invoice_start_date:
                     invoice_period_end = add_days(add_months(invoice_date, freq), -1)
-                    if invoice_period_end > lease_end:
-                        invoice_qty = getDateMonthDiff(invoice_date, lease_end, 1)
+                    if invoice_period_end > schedule_end:
+                        invoice_qty = getDateMonthDiff(invoice_date, schedule_end, 1)
                     invoice_date = add_days(invoice_period_end, 1)
 
                 # Generate invoice schedules from the valid invoice_date onward
-                while lease_end >= invoice_date:
+                while schedule_end >= invoice_date:
                     invoice_period_end = add_days(add_months(invoice_date, freq), -1)
-                    if invoice_period_end > lease_end:
-                        invoice_qty = getDateMonthDiff(invoice_date, lease_end, 1)
+                    if invoice_period_end > schedule_end:
+                        invoice_qty = getDateMonthDiff(invoice_date, schedule_end, 1)
 
                     exists = frappe.db.exists(
                         "Lease Invoice Schedule",
@@ -92,7 +94,7 @@ def make_lease_invoice_schedule():
 
                     if exists:
                         existing_doc = frappe.get_doc("Lease Invoice Schedule", exists)
-                        if existing_doc.date_to_invoice in (today_date, lease_end):
+                        if existing_doc.date_to_invoice in (today_date, schedule_end):
                             invoice_date = add_days(invoice_period_end, 1)
                             continue
 
