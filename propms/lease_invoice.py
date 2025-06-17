@@ -189,6 +189,7 @@ def leaseInvoiceAutoCreate():
                             else "sales_order_number",
                             res.name,
                         )
+                    frappe.db.commit()  # commit the changes to the database
                     frappe.msgprint(
                         "Lease Invoice generated with number: " + str(res.name)
                     )
@@ -253,6 +254,7 @@ def leaseInvoiceAutoCreate():
                     else "sales_order_number",
                     res.name,
                 )
+            frappe.db.commit()  # commit the changes to the database
             frappe.msgprint("Lease Invoice generated with number: " + str(res.name))
 
     except Exception as e:
