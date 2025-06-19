@@ -74,8 +74,12 @@ def makeInvoice(
         if doc.taxes_and_charges:
             getTax(doc)
         doc.calculate_taxes_and_totals()
-        # frappe.msgprint("Department " + str(sales_invoice.department))
         doc.save()
+        
+        # Check if auto submit is enabled in Property Management Settings
+        if doctype == "Sales Invoice" and frappe.db.get_single_value("Property Management Settings", "auto_submit_sales_invoice"):
+            doc.submit()
+            
         return doc
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
