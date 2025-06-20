@@ -23,6 +23,7 @@
   "auto_submit_sales_invoice",
   "column_break_14",
   "maintenance_item_group",
+  "allow_end_of_the_month",
   "section_break_17",
   "self_consumption_customer"
  ],
@@ -112,9 +113,15 @@
   },
   {
    "default": "0",
-   "fieldname": "make_invoice_schedule_up_to_tomorrow_only",
+   "fieldname": "allow_end_of_the_month",
    "fieldtype": "Check",
-   "label": "Make invoice schedule up to tomorrow only"
+   "label": "Allow end of the month"
+  },
+  {
+   "default": "0",
+   "fieldname": "generate_invoice_schedule_next_month",
+   "fieldtype": "Check",
+   "label": "Generate invoice schedule for next month"
   },
   {
    "default": "0",
