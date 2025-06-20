@@ -18,7 +18,8 @@
   "group_maintenance_job_items",
   "submit_maintenance_invoice",
   "make_single_invoice_on_lease",
-  "generate_invoice_schedule_next_month",
+  "make_invoice_schedule_up_to_tomorrow_only",
+  "use_valid_from_date",
   "column_break_14",
   "maintenance_item_group",
   "allow_end_of_the_month",
@@ -120,6 +121,12 @@
    "fieldname": "generate_invoice_schedule_next_month",
    "fieldtype": "Check",
    "label": "Generate invoice schedule for next month"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_valid_from_date",
+   "fieldtype": "Check",
+   "label": "Use Valid From Date"
   }
  ],
  "index_web_pages_for_search": 1,

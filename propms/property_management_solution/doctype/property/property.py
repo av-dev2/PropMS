@@ -27,3 +27,16 @@ def add_node():
     doc = frappe.get_doc(args)
 
     doc.save()
+@frappe.whitelist()
+def get_children(doctype, parent=None, company=None, is_root=False):
+	if is_root:
+		parent = ""
+
+	fields = ["name as value", "is_group as expandable"]
+	filters = [
+		["ifnull(`parent_property`, '')", "=", parent],
+		["company", "in", (company, None, "")],
+	]
+
+	return frappe.get_list(doctype, fields=fields, filters=filters, order_by="name")
+
