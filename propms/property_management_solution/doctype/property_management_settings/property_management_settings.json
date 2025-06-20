@@ -20,6 +20,7 @@
   "make_single_invoice_on_lease",
   "make_invoice_schedule_up_to_tomorrow_only",
   "use_valid_from_date",
+  "auto_submit_sales_invoice",
   "column_break_14",
   "maintenance_item_group",
   "allow_end_of_the_month",
@@ -127,12 +128,18 @@
    "fieldname": "use_valid_from_date",
    "fieldtype": "Check",
    "label": "Use Valid From Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_submit_sales_invoice",
+   "fieldtype": "Check",
+   "label": "Auto Submit Sales Invoice From Lease"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-05-05 15:45:52.134740",
+ "modified": "2025-06-19 15:56:24.645492",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
