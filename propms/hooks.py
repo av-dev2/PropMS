@@ -217,7 +217,7 @@ scheduler_events = {
     "cron": {
         "00 12 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreate"],
         "00 00 * * *": ["propms.lease_invoice_schedule.make_lease_invoice_schedule"],
-    },
+    }
 }
 
 
