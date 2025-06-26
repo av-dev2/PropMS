@@ -22,6 +22,9 @@ def make_transaction(doc, for_self_consumption=False):
     submit_maintenance_stock_entry = frappe.db.get_value(
         "Property Management Settings", None, "submit_maintenance_stock_entry"
     )
+    submit_maintenance_invoice = frappe.db.get_value(
+        "Property Management Settings", None, "submit_maintenance_invoice"
+    )
     # TODO: Remove this after stability of Stock Entry
     self_consumption_customer = frappe.db.get_value(
         "Property Management Settings", None, "self_consumption_customer"
@@ -144,7 +147,7 @@ def make_transaction(doc, for_self_consumption=False):
                 invoice_url, invoice_doc.name
             )
             frappe.flags.ignore_account_permission = True
-            if submit_maintenance_stock_entry == 1 and not pos:
+            if submit_maintenance_invoice == 1 and not pos:
                 invoice_doc.submit()
             if pos:
                 make_sales_pos_payment(invoice_doc, user_pos_profile.name)
