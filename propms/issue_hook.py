@@ -19,6 +19,9 @@ def make_transaction(doc, for_self_consumption=False):
     if not company:
         company = frappe.db.get_single_value("Global Defaults", "default_company")
     cost_center = frappe.db.get_value("Property", doc.property_name, "cost_center")
+    submit_maintenance_stock_entry = frappe.db.get_value(
+        "Property Management Settings", None, "submit_maintenance_stock_entry"
+    )
     submit_maintenance_invoice = frappe.db.get_value(
         "Property Management Settings", None, "submit_maintenance_invoice"
     )
@@ -26,9 +29,9 @@ def make_transaction(doc, for_self_consumption=False):
     self_consumption_customer = frappe.db.get_value(
         "Property Management Settings", None, "self_consumption_customer"
     )
-    if not submit_maintenance_invoice:
-        submit_maintenance_invoice = 0
-    submit_maintenance_invoice = int(submit_maintenance_invoice)
+    if not submit_maintenance_stock_entry:
+        submit_maintenance_stock_entry = 0
+    submit_maintenance_stock_entry = int(submit_maintenance_stock_entry)
     user_remarks = "Transaction for Maintenance Job Card {0}".format(doc.name)
     lease = get_latest_active_lease(doc.property_name)
 
@@ -58,7 +61,7 @@ def make_transaction(doc, for_self_consumption=False):
                 stock_entry_url, stock_entry_doc.name
             )
             frappe.flags.ignore_account_permission = True
-            if submit_maintenance_invoice == 1 and not pos:
+            if submit_maintenance_stock_entry == 1 and not pos:
                 stock_entry_doc.submit()
             if pos:
                 frappe.throw(_("POS Stock Entry cannot be created for Self Consumption items"))
@@ -67,7 +70,7 @@ def make_transaction(doc, for_self_consumption=False):
                 if (
                     item_row.item
                     and item_row.quantity
-                    and item_row.invoiced == 1
+                    and item_row.material_status == "Self Consumption"
                     and not item_row.stock_entry
                 ):
                     item_row.stock_entry = stock_entry_doc.name

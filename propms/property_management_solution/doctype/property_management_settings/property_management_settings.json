@@ -21,11 +21,13 @@
   "make_invoice_schedule_up_to_tomorrow_only",
   "use_valid_from_date",
   "auto_submit_sales_invoice",
+  "submit_maintenance_stock_entry",
   "column_break_14",
   "maintenance_item_group",
   "allow_end_of_the_month",
   "section_break_17",
-  "self_consumption_customer"
+  "self_consumption_customer",
+  "generate_invoice_schedule_next_month"
  ],
  "fields": [
   {
@@ -134,12 +136,24 @@
    "fieldname": "auto_submit_sales_invoice",
    "fieldtype": "Check",
    "label": "Auto Submit Sales Invoice From Lease"
+  },
+  {
+   "default": "0",
+   "fieldname": "submit_maintenance_stock_entry",
+   "fieldtype": "Check",
+   "label": "Submit Maintenance Stock Entry"
+  },
+  {
+   "default": "0",
+   "fieldname": "make_invoice_schedule_up_to_tomorrow_only",
+   "fieldtype": "Check",
+   "label": "Make Invoice Schedule up to tomorrow only"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-19 15:56:24.645492",
+ "modified": "2025-06-26 16:00:42.304877",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
