@@ -18,6 +18,7 @@
   "group_maintenance_job_items",
   "submit_maintenance_invoice",
   "make_single_invoice_on_lease",
+  "make_invoice_schedule_up_to_tomorrow_only",
   "use_valid_from_date",
   "auto_submit_sales_invoice",
   "submit_maintenance_stock_entry",
@@ -141,12 +142,18 @@
    "fieldname": "submit_maintenance_stock_entry",
    "fieldtype": "Check",
    "label": "Submit Maintenance Stock Entry"
+  },
+  {
+   "default": "0",
+   "fieldname": "make_invoice_schedule_up_to_tomorrow_only",
+   "fieldtype": "Check",
+   "label": "Make Invoice Schedule up to tomorrow only"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-26 15:42:16.131867",
+ "modified": "2025-06-26 16:00:42.304877",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
