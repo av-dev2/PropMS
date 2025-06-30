@@ -29,6 +29,33 @@ frappe.ui.form.on('Lease', {
 		cur_frm.add_custom_button(__("Make Invoice Schedule for all Lease"), function() {
 			getAllLease(cur_frm);
 		});
+
+        // Add custom buttons for Accounts Receivable and Accounting Ledger
+        if (!frm.doc.__islocal) {
+            // Add "Accounts Receivable" custom button
+            frm.add_custom_button(
+                __("Accounts Receivable"),
+                function () {
+                    frappe.set_route("query-report", "Accounts Receivable", {
+                        party_type: "Customer",
+                        party: frm.doc.lease_customer,
+                    });
+                },
+                __("View")
+            );
+
+            // Add "Accounting Ledger" custom button
+            frm.add_custom_button(
+                __("Accounting Ledger"),
+                function () {
+                    frappe.set_route("query-report", "General Ledger", {
+                        party_type: "Customer",
+                        party: frm.doc.lease_customer,
+                    });
+                },
+                __("View")
+            );
+        }
 	},
 	skip_end_date: function(frm) {
 		if (frm.doc.skip_end_date) {
