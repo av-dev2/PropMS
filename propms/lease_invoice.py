@@ -435,3 +435,14 @@ def leaseInvoiceAutoCreateNextMonth(data):
 
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
+
+
+@frappe.whitelist()
+def enqueue_lease_invoice_auto_create():
+    """Enqueue leaseInvoiceAutoCreate as a background job on the 'long' queue."""
+    frappe.enqueue(
+        "propms.lease_invoice.leaseInvoiceAutoCreate",
+        queue="long",
+        now=False
+    )
+    return "Lease invoice auto creation has been queued. You will be notified once done."
