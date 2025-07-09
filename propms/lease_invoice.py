@@ -194,9 +194,7 @@ def leaseInvoiceAutoCreate():
                             res.name,
                         )
                     frappe.db.commit()  # commit the changes to the database
-                    frappe.msgprint(
-                        "Lease Invoice generated with number: " + str(res.name)
-                    )
+                    frappe.msgprint(_("Lease Invoice generated with number: {0}").format(res.name))
                 item_dict = []
                 lease_invoice_schedule_list = (
                     []
@@ -259,7 +257,7 @@ def leaseInvoiceAutoCreate():
                     res.name,
                 )
             frappe.db.commit()  # commit the changes to the database
-            frappe.msgprint("Lease Invoice generated with number: " + str(res.name))
+            frappe.msgprint(_("Lease Invoice generated with number: {0}").format(res.name))
 
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
@@ -431,7 +429,7 @@ def leaseInvoiceAutoCreateNextMonth(data):
                     else "sales_order_number",
                     res.name,
                 )
-            frappe.msgprint("Lease Invoice generated with number: " + str(res.name))
+            frappe.msgprint(_("Lease Invoice generated with number: {0}").format(res.name))
 
     except Exception as e:
         app_error_log(frappe.session.user, str(e))

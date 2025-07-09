@@ -44,7 +44,7 @@ frappe.ui.form.on('Outsourcing Attendance Details', {
 			if(doc.attendance_details[item].person_name!="" && doc.attendance_details[item].person_name==row.person_name){
 				if(doc.attendance_details[item].name!=row.name){
 					frappe.model.set_value(cdt,cdn,"person_name","");
-					frappe.throw("Person already selected, please select a different person.");
+					frappe.throw(__("Person already selected, please select a different person."));
 				}
 			}
 		}

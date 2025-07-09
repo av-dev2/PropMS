@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import add_days, today, getdate, add_months, get_datetime, now
 from propms.auto_custom import app_error_log, makeInvoiceSchedule, getDateMonthDiff
+from frappe import _
 
 
 class Lease(Document):
@@ -40,7 +41,7 @@ class Lease(Document):
                 <= get_datetime(add_months(self.end_date, -3))
             ):
                 frappe.db.set_value("Property", self.property, "status", "On Lease")
-                frappe.msgprint("Property set to On Lease")
+                frappe.msgprint(_("Property set to On Lease"))
             if (
                 self.skip_end_date == None
             ):
@@ -52,12 +53,12 @@ class Lease(Document):
                     frappe.db.set_value(
                         "Property", self.property, "status", "Off Lease in 3 Months"
                     )
-                    frappe.msgprint("Property set to Off Lease in 3 Months")
+                    frappe.msgprint(_("Property set to Off Lease in 3 Months"))
             else:
                 frappe.db.set_value(
                     "Property", self.property, "status", "On Lease"
                 )
-            frappe.msgprint("Property set to On Lease")
+            frappe.msgprint(_("Property set to On Lease"))
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
 
@@ -65,9 +66,9 @@ class Lease(Document):
 @frappe.whitelist()
 def getAllLease():
     # Below is temporarily created to manually run through all lease and refresh lease invoice schedule. Hardcoded to start from 1st Jan 2020.
-    frappe.msgprint(
+    frappe.msgprint(_(
         "The task of making lease invoice schedule for all users has been sent for background processing."
-    )
+    ))
     invoice_start_date = frappe.db.get_single_value(
         "Property Management Settings", "invoice_start_date"
     )
@@ -76,7 +77,7 @@ def getAllLease():
     )
     # frappe.msgprint("Working on lease_list" + str(lease_list))
     lease_list_len = len(lease_list)
-    frappe.msgprint("Total number of lease to be processed is " + str(lease_list_len))
+    frappe.msgprint(_("Total number of lease to be processed is {0}").format(lease_list_len))
     for lease in lease_list:
         make_lease_invoice_schedule(lease.name)
 

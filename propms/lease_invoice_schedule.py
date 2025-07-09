@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 from frappe.utils import add_days, today, getdate, add_months, get_first_day, get_last_day
 from propms.auto_custom import app_error_log, makeInvoiceSchedule, getDateMonthDiff
 from frappe.query_builder import DocType
@@ -23,7 +24,7 @@ def make_lease_invoice_schedule():
     invoice_start_date = getdate(settings.get("invoice_start_date", None))
 
     if not invoice_start_date:
-        frappe.throw("Please set Invoice Start Date in Property Management Settings")
+        frappe.throw(_("Please set Invoice Start Date in Property Management Settings"))
 
     Lease = DocType("Lease")
     query = (
@@ -102,6 +103,7 @@ def make_lease_invoice_schedule():
                 while schedule_end >= invoice_date and invoice_date <= next_month_end:
                     # Calculate period end as last day of the month after freq months
                     invoice_period_end = get_last_day(add_months(invoice_date, freq - 1))
+                    
 
                     # Only create schedule if date_to_invoice is between invoice start date and today + next month
                     if schedule_start <= invoice_date <= next_month_end:
@@ -136,8 +138,8 @@ def make_lease_invoice_schedule():
                     # Move to first day of next period
                     invoice_date = add_days(invoice_period_end, 1)
 
-            frappe.msgprint(f"Completed invoice schedule for Lease: {lease.name}")
+            frappe.msgprint(_(f"Completed invoice schedule for Lease: {lease.name}"))
 
         except Exception as e:
-            frappe.msgprint(f"Error in {lease_name}. Check app error log.")
+            frappe.msgprint(_(f"Error in {lease_name}. Check app error log."))
             app_error_log(frappe.session.user, f"{lease_name}: {str(e)}")

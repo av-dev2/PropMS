@@ -9,6 +9,7 @@ import frappe
 import frappe.permissions
 import frappe.share
 import traceback
+from frappe import _
 
 
 @frappe.whitelist()
@@ -165,7 +166,7 @@ def changeStatusKeyset(self, method):
                 doc.status = "Out"
             doc.save()
         else:
-            frappe.throw("Key set not found - {0}.".format(self.key_set))
+            frappe.throw(_("Key set not found - {0}.").format(self.key_set))
 
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
@@ -216,7 +217,7 @@ def validateSalesInvoiceItemDuplication(self, method):
             if not item.name == item_child.name:
                 if item.item_code == item_child.item_code:
                     frappe.throw(
-                        "Duplicate Item Exists - {0}. Duplications are not allowed.".format(
+                        _("Duplicate Item Exists - {0}. Duplications are not allowed.").format(
                             item.item_code
                         )
                     )
