@@ -35,6 +35,35 @@ class Lease(Document):
 
     def validate(self):
         try:
+            # Lease Status Validation: Prevent multiple active leases per property
+            if self.lease_status == "Active":
+                # Query for other non-draft leases for the same property
+                conflicting_leases = frappe.db.get_all(
+                    "Lease",
+                    filters={
+                        "property": self.property,
+                        "lease_status": ["!=", "Draft"],
+                        "name": ["!=", self.name],
+                        "docstatus": ["<", 2],  # Exclude cancelled
+                    },
+                    fields=["name", "end_date", "lease_status"],
+                )
+                for lease in conflicting_leases:
+                    # If end_date is blank or in the future, block activation
+                    if not lease["end_date"] or getdate(lease["end_date"]) > getdate(
+                        self.start_date
+                    ):
+                        msg = _(
+                            "Cannot activate lease <b>{0}</b> for property <b>{1}</b>.<br>Conflicting lease: <b>{2} (Status: {3}, End Date: {4})</b>"
+                        ).format(
+                            self.name,
+                            self.property,
+                            lease["name"],
+                            lease["lease_status"],
+                            lease["end_date"] or "None",
+                        )
+                        frappe.throw(msg, frappe.ValidationError)
+
             if (
                 get_datetime(self.start_date)
                 <= get_datetime(now())
