@@ -240,8 +240,7 @@
    "fieldname": "security_deposit",
    "fieldtype": "Currency",
    "label": "Security deposit",
-   "options": "security_deposit_currency",
-   "reqd": 1
+   "options": "security_deposit_currency"
   },
   {
    "fieldname": "security_status",
@@ -319,7 +318,7 @@
    "fieldname": "lease_status",
    "fieldtype": "Select",
    "label": "Lease Status",
-   "options": "\nActive\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating"
+   "options": "\nActive\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating\nDraft"
   },
   {
    "default": "0",
@@ -329,7 +328,7 @@
   }
  ],
  "links": [],
- "modified": "2025-06-05 11:46:57.748854",
+ "modified": "2025-07-25 09:29:01.856610",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Lease",
