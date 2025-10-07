@@ -247,26 +247,42 @@ def statusChangeBeforeLeaseExpire():
 @frappe.whitelist()
 def statusChangeAfterLeaseExpire():
     try:
+        from frappe.query_builder import DocType
+
+        Property = DocType('Property')
+        Lease = DocType('Lease')
+
         # Get properties that might need status change
-        properties = frappe.db.sql("""
-            SELECT name
-            FROM `tabProperty`
-            WHERE status IN ('On Lease', 'Off Lease in 3 Months')
-        """, as_dict=1)
+        properties = (
+            frappe.qb.from_(Property)
+            .select(Property.name)
+            .where(Property.status.isin(['On Lease', 'Off Lease in 3 Months']))
+        ).run(as_dict=True)
+
+        properties_to_update = []
 
         for prop in properties:
             # Check if property has any active leases
-            active_leases = frappe.db.sql("""
-                SELECT name
-                FROM `tabLease`
-                WHERE property = %s
-                AND start_date <= NOW()
-                AND (end_date >= NOW() OR skip_end_date = 1)
-            """, (prop.name,))
+            active_leases = (
+                frappe.qb.from_(Lease)
+                .select(Lease.name)
+                .where(Lease.property == prop.name)
+                .where(Lease.start_date <= frappe.utils.now())
+                .where(
+                    (Lease.end_date >= frappe.utils.now()) |
+                    (Lease.skip_end_date == 1)
+                )
+            ).run()
 
-            # If no active leases, set to Available
+            # If no active leases, add to update list
             if not active_leases:
-                frappe.db.set_value("Property", prop.name, "status", "Available")
+                properties_to_update.append(prop.name)
+
+        # Bulk update properties to Available
+        if properties_to_update:
+            frappe.qb.update(Property).set(Property.status, 'Available').where(
+                Property.name.isin(properties_to_update)
+            ).run()
 
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
