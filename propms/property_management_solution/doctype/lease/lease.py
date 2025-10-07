@@ -70,7 +70,7 @@ class Lease(Document):
                 <= get_datetime(add_months(self.end_date, -3))
             ):
                 frappe.db.set_value("Property", self.property, "status", "On Lease")
-                frappe.msgprint(_("Property set to On Lease"))
+                frappe.msgprint(_(f'Property "{self.property}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
             if (
                 self.skip_end_date == None
             ):
@@ -82,12 +82,12 @@ class Lease(Document):
                     frappe.db.set_value(
                         "Property", self.property, "status", "Off Lease in 3 Months"
                     )
-                    frappe.msgprint(_("Property set to Off Lease in 3 Months"))
+                    frappe.msgprint(_(f'Property "{self.property}" has now been set <b>Off Lease in 3 Months</b> for Lease "{self.name}"'))
             else:
                 frappe.db.set_value(
                     "Property", self.property, "status", "On Lease"
                 )
-            frappe.msgprint(_("Property set to On Lease"))
+                frappe.msgprint(_(f'Property "{self.property}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
 
