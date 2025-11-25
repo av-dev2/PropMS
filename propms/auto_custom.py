@@ -226,23 +226,38 @@ def validateSalesInvoiceItemDuplication(self, method):
 @frappe.whitelist()
 def statusChangeBeforeLeaseExpire():
     try:
-        # Remarked as the users will set the property status manually
-        # lease_doclist=frappe.db.sql("SELECT l.name, l.property, l.end_date FROM  `tabLease` l  INNER JOIN `tabProperty` p ON l.property = p.name WHERE  l.name = (SELECT ml.name FROM   `tabLease` ml WHERE  ml.property = l.property  ORDER BY ml.end_date DESC LIMIT  1) AND p.status != 'On Lease' and Now() BETWEEN l.start_date and l.end_date", as_dict=1)
-        # if lease_doclist:
-        # 	for lease in lease_doclist:
-        # 		frappe.db.set_value("Property",lease.property,"status","On Lease")
-        lease_doclist = frappe.db.sql(
-            "SELECT l.name, l.property, l.end_date FROM  `tabLease` l  INNER JOIN `tabProperty` p ON l.property = p.name WHERE  l.name = (SELECT ml.name FROM   `tabLease` ml WHERE  ml.property = l.property ORDER BY ml.end_date DESC LIMIT  1) AND l.end_date BETWEEN Now() AND Date_add(Now(), INTERVAL 3 month) AND p.status = 'On Lease'",
+       
+        # ---------------------------------------------
+        # Mark properties as "Off Lease in 3 Months"
+        #    Only when lease *has* an end_date
+        #    and ends within next 3 months.
+        # ---------------------------------------------
+        upcoming_expiry = frappe.db.sql(
+            """
+            SELECT l.name, l.property, l.end_date
+            FROM `tabLease` l
+            INNER JOIN `tabProperty` p ON l.property = p.name
+            WHERE l.end_date IS NOT NULL
+              AND l.name = (
+                    SELECT ml.name
+                    FROM `tabLease` ml
+                    WHERE ml.property = l.property
+                    ORDER BY ml.end_date DESC
+                    LIMIT 1
+                )
+              AND l.end_date BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 3 MONTH)
+              AND p.status = 'On Lease'
+            """,
             as_dict=1,
         )
-        if lease_doclist:
-            for lease in lease_doclist:
-                frappe.db.set_value(
-                    "Property", lease.property, "status", "Off Lease in 3 Months"
-                )
+
+        for lease in upcoming_expiry:
+            frappe.db.set_value(
+                "Property", lease.property, "status", "Off Lease in 3 Months"
+            )
+
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
-
 
 @frappe.whitelist()
 def statusChangeAfterLeaseExpire():
@@ -287,6 +302,27 @@ def statusChangeAfterLeaseExpire():
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
 
+@frappe.whitelist()
+def update_property_status():
+    try:
+        active_lease_properties = frappe.db.sql(
+            """
+            SELECT DISTINCT p.name
+            FROM `tabProperty` p
+            INNER JOIN `tabLease` l ON l.property = p.name
+            WHERE p.status = 'Available'
+              AND l.start_date <= NOW()
+              AND l.lease_status = 'Active'
+            """,
+            as_dict=1,
+        )
+        # frappe.throw(str(active_lease_properties))
+
+        for row in active_lease_properties:
+            frappe.db.set_value("Property", row.name, "status", "On Lease")
+            
+    except Exception as e:
+        app_error_log(frappe.session.user, str(e))
 
 @frappe.whitelist()
 def getCheckList():
