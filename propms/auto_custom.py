@@ -285,7 +285,7 @@ def statusChangeAfterLeaseExpire():
                 .where(Lease.start_date <= frappe.utils.now())
                 .where(
                     (Lease.end_date >= frappe.utils.now()) |
-                    (Lease.skip_end_date == 1)
+                    (Lease.end_date.isnull())
                 )
             ).run()
 
