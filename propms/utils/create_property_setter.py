@@ -28,12 +28,39 @@ def create_property_setter_from_json(property_setters_obj):
         "__last_sync_on",
     ]
 
-    existing_setters = {d.name for d in frappe.db.get_all("Property Setter", fields=["name"],page_length=10000)}
+    # Fetching existing setters using composite key (DocType, Field, Property)
+    existing_data = frappe.db.get_all("Property Setter", 
+        fields=["name", "doc_type", "field_name", "property", "value", "property_type"], 
+        page_length=20000
+    )
+    
+    # Create a mapping: {(doc_type, field_name, property): record}
+    existing_map = {}
+    for d in existing_data:
+        key = (d.doc_type, d.field_name or "", d.property)
+        existing_map[key] = d
 
     for property_setter in property_setters_obj:
-        if property_setter.get('name') in existing_setters:
-            continue
+        doc_type = property_setter.get('doc_type')
+        field_name = property_setter.get('field_name')
+        prop = property_setter.get('property')
+        key = (doc_type, field_name or "", prop)
+        
+        name_in_json = property_setter.get('name')
+        
+        if key in existing_map:
+            existing = existing_map[key]
+            
+            # Normalizing values for comparison
+            old_val = str(existing.get('value') if existing.get('value') is not None else "")
+            new_val = str(property_setter.get('value') if property_setter.get('value') is not None else "")
+            
+            old_prop_type = str(existing.get('property_type') if existing.get('property_type') is not None else "")
+            new_prop_type = str(property_setter.get('property_type') if property_setter.get('property_type') is not None else "")
 
+            if old_val.strip() == new_val.strip() and old_prop_type.strip() == new_prop_type.strip():
+                continue
+            
         if property_setter.get('doctype_or_field') == "DocType":
             for_doctype = True
         else:
