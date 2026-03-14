@@ -47,7 +47,17 @@
   "description",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "lease_increment_setup_tab",
+  "lease_increment_setup_section",
+  "enable_auto_increment",
+  "increment_effective_from",
+  "column_break_increment_setup",
+  "increment_rounding_mode",
+  "increment_rounding_precision",
+  "auto_create_lease_items_for_months",
+  "lease_increment_rules_section",
+  "lease_increment_rules"
  ],
  "fields": [
   {
@@ -225,6 +235,60 @@
    "fieldname": "description",
    "fieldtype": "Text",
    "label": "DESCRIPTION"
+  },
+  {
+   "fieldname": "lease_increment_setup_tab",
+   "fieldtype": "Tab Break",
+   "label": "Lease Increment Settings"
+  },
+  {
+   "fieldname": "lease_increment_setup_section",
+   "fieldtype": "Section Break",
+   "label": "Auto Increment Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_auto_increment",
+   "fieldtype": "Check",
+   "label": "Enable Auto Increment"
+  },
+  {
+   "fieldname": "increment_effective_from",
+   "fieldtype": "Date",
+   "label": "Increment Effective From"
+  },
+  {
+   "fieldname": "column_break_increment_setup",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Round",
+   "fieldname": "increment_rounding_mode",
+   "fieldtype": "Select",
+   "label": "Increment Rounding Mode",
+   "options": "\nRound\nCeil\nFloor\nNone"
+  },
+  {
+   "default": "2",
+   "fieldname": "increment_rounding_precision",
+   "fieldtype": "Int",
+   "label": "Increment Rounding Precision"
+  },
+  {
+   "fieldname": "auto_create_lease_items_for_months",
+   "fieldtype": "Int",
+   "label": "Auto Create Lease Items For Months"
+  },
+  {
+   "fieldname": "lease_increment_rules_section",
+   "fieldtype": "Section Break",
+   "label": "Lease Increment Rules"
+  },
+  {
+   "fieldname": "lease_increment_rules",
+   "fieldtype": "Table",
+   "label": "Lease Increment Rules",
+   "options": "Lease Increment Rule"
   },
   {
    "fieldname": "cost_center",
