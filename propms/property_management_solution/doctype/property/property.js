@@ -15,6 +15,13 @@ frappe.ui.form.on('Property', {
 		});
 
 		frm.set_query("parent_property", {is_group: 1});
+		frm.set_query("lease_item", "lease_increment_rules", function() {
+			return {
+				"filters": [
+					["item_group", "=", "Lease Items"],
+				]
+			};
+		});
 	},
 	company: function(frm) {
 		frm.set_value("cost_center", "");
@@ -49,4 +56,3 @@ frappe.ui.form.on('Property Meter Reading', {
 		}
 	}
 })
-
