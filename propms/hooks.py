@@ -107,6 +107,9 @@ doc_events = {
             "propms.issue_hook.validate",
         ],
     },
+    "Property": {
+        "validate": "propms.property_increment.validate_property_increment_settings",
+    },
     "Material Request": {
         "validate": "propms.auto_custom.makeSalesInvoice",
         "on_update": "propms.auto_custom.makeSalesInvoice",
@@ -124,6 +127,7 @@ scheduler_events = {
     "daily": [
         "propms.auto_custom.statusChangeBeforeLeaseExpire",
         "propms.auto_custom.statusChangeAfterLeaseExpire",
+        "propms.property_increment.run_property_increment_engine",
     ],
     "cron": {
         # "00 12 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreate"],
