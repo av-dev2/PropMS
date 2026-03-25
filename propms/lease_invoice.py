@@ -69,6 +69,7 @@ def makeInvoice(
             )
         )
         if doc.doctype == "Sales Order":
+            doc.posting_date = doc.from_date
             doc.delivery_date = doc.to_date
         doc.insert()
         if doc.taxes_and_charges:
