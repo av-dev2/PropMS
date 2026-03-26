@@ -69,12 +69,21 @@ def makeInvoice(
             )
         )
         if doc.doctype == "Sales Order":
-            doc.posting_date = doc.from_date
+            sales_order_date = doc.from_date
+            doc.transaction_date = sales_order_date
+            doc.posting_date = sales_order_date
             doc.delivery_date = doc.to_date
-        doc.insert()
+            if not doc.due_date or getdate(doc.due_date) < getdate(sales_order_date):
+                doc.due_date = sales_order_date
+                
+        if doc.doctype != "Sales Order":
+            doc.insert()
         if doc.taxes_and_charges:
             getTax(doc)
         doc.calculate_taxes_and_totals()
+        if doc.doctype == "Sales Order":
+            doc.insert()
+            return doc
         doc.save()
         
         # Check if auto submit is enabled in Property Management Settings
