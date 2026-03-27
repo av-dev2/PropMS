@@ -20,6 +20,7 @@
   "make_single_invoice_on_lease",
   "make_invoice_schedule_up_to_tomorrow_only",
   "use_valid_from_date",
+  "auto_submit_sales_order",
   "auto_submit_sales_invoice",
   "submit_maintenance_stock_entry",
   "column_break_14",
@@ -148,12 +149,18 @@
    "fieldname": "make_invoice_schedule_up_to_tomorrow_only",
    "fieldtype": "Check",
    "label": "Make Invoice Schedule up to tomorrow only"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_submit_sales_order",
+   "fieldtype": "Check",
+   "label": "Auto Submit Sales Order From Lease"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-26 16:00:42.304877",
+ "modified": "2026-03-27 18:16:34.603663",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Management Settings",
@@ -181,6 +188,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
