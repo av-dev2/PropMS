@@ -11,83 +11,97 @@ from frappe import _
 
 
 class Lease(Document):
+    def get_all_properties(self):
+        properties = set()
+        if self.property:
+            properties.add(self.property)
+        for item in self.lease_item:
+            if item.property_unit:
+                properties.add(item.property_unit)
+        return list(properties)
+
     def on_submit(self):
         try:
-            checklist_doc = frappe.get_doc("Checklist Checkup Area", "Handover")
-            if checklist_doc:
-                check_list = []
-                for task in checklist_doc.task:
-                    check = {}
-                    check["checklist_task"] = task.task_name
-                    check_list.append(check)
+            properties = self.get_all_properties()
+            for prop in properties:
+                checklist_doc = frappe.get_doc("Checklist Checkup Area", "Handover")
+                if checklist_doc:
+                    check_list = []
+                    for task in checklist_doc.task:
+                        check = {}
+                        check["checklist_task"] = task.task_name
+                        check_list.append(check)
 
-                frappe.get_doc(
-                    dict(
-                        doctype="Daily Checklist",
-                        area="Handover",
-                        checkup_date=self.start_date,
-                        daily_checklist_detail=check_list,
-                        property=self.property,
-                    )
-                ).insert()
+                    frappe.get_doc(
+                        dict(
+                            doctype="Daily Checklist",
+                            area="Handover",
+                            checkup_date=self.start_date,
+                            daily_checklist_detail=check_list,
+                            property=prop,
+                        )
+                    ).insert()
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
 
     def validate(self):
         try:
+            properties = self.get_all_properties()
             # Lease Status Validation: Prevent multiple active leases per property
             if self.lease_status == "Active":
-                # Query for other non-draft leases for the same property
-                conflicting_leases = frappe.db.get_all(
-                    "Lease",
-                    filters={
-                        "property": self.property,
-                        "lease_status": ["!=", "Draft"],
-                        "name": ["!=", self.name],
-                        "docstatus": ["<", 2],  # Exclude cancelled
-                    },
-                    fields=["name", "end_date", "lease_status"],
-                )
-                for lease in conflicting_leases:
-                    # If end_date is blank or in the future, block activation
-                    if not lease["end_date"] or getdate(lease["end_date"]) > getdate(
-                        self.start_date
-                    ):
-                        msg = _(
-                            "Cannot activate lease <b>{0}</b> for property <b>{1}</b>.<br>Conflicting lease: <b>{2} (Status: {3}, End Date: {4})</b>"
-                        ).format(
-                            self.name,
-                            self.property,
-                            lease["name"],
-                            lease["lease_status"],
-                            lease["end_date"] or "None",
-                        )
-                        frappe.throw(msg, frappe.ValidationError)
-
-            if (
-                get_datetime(self.start_date)
-                <= get_datetime(now())
-                <= get_datetime(add_months(self.end_date, -3))
-            ):
-                frappe.db.set_value("Property", self.property, "status", "On Lease")
-                frappe.msgprint(_(f'Property "{self.property}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
-            if (
-                self.skip_end_date == None
-            ):
-                if (
-                    get_datetime(add_months(self.end_date, -3))
-                    <= get_datetime(now())
-                    <= get_datetime(add_months(self.end_date, 3))
-                ):
-                    frappe.db.set_value(
-                        "Property", self.property, "status", "Off Lease in 3 Months"
+                for prop in properties:
+                    # Query for other non-draft leases for the same property
+                    conflicting_leases = frappe.db.get_all(
+                        "Lease",
+                        filters={
+                            "property": prop,
+                            "lease_status": ["!=", "Draft"],
+                            "name": ["!=", self.name],
+                            "docstatus": ["<", 2],  # Exclude cancelled
+                        },
+                        fields=["name", "end_date", "lease_status"],
                     )
-                    frappe.msgprint(_(f'Property "{self.property}" has now been set <b>Off Lease in 3 Months</b> for Lease "{self.name}"'))
-            else:
-                frappe.db.set_value(
-                    "Property", self.property, "status", "On Lease"
-                )
-                frappe.msgprint(_(f'Property "{self.property}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
+                    for lease in conflicting_leases:
+                        # If end_date is blank or in the future, block activation
+                        if not lease["end_date"] or getdate(lease["end_date"]) > getdate(
+                            self.start_date
+                        ):
+                            msg = _(
+                                "Cannot activate lease <b>{0}</b> for property <b>{1}</b>.<br>Conflicting lease: <b>{2} (Status: {3}, End Date: {4})</b>"
+                            ).format(
+                                self.name,
+                                prop,
+                                lease["name"],
+                                lease["lease_status"],
+                                lease["end_date"] or "None",
+                            )
+                            frappe.throw(msg, frappe.ValidationError)
+
+            for prop in properties:
+                if (
+                    get_datetime(self.start_date)
+                    <= get_datetime(now())
+                    <= get_datetime(add_months(self.end_date, -3))
+                ):
+                    frappe.db.set_value("Property", prop, "status", "On Lease")
+                    frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
+                if (
+                    self.skip_end_date == None
+                ):
+                    if (
+                        get_datetime(add_months(self.end_date, -3))
+                        <= get_datetime(now())
+                        <= get_datetime(add_months(self.end_date, 3))
+                    ):
+                        frappe.db.set_value(
+                            "Property", prop, "status", "Off Lease in 3 Months"
+                        )
+                        frappe.msgprint(_(f'Property "{prop}" has now been set <b>Off Lease in 3 Months</b> for Lease "{self.name}"'))
+                else:
+                    frappe.db.set_value(
+                        "Property", prop, "status", "On Lease"
+                    )
+                    frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
 
