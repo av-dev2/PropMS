@@ -1,0 +1,90 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-13 08:29:36.007416",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lease_item",
+  "increment_every",
+  "increment_uom",
+  "column_break_1",
+  "increment_type",
+  "increment_value",
+  "rule_effective_from",
+  "is_active"
+ ],
+ "fields": [
+  {
+   "fieldname": "lease_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Lease Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "increment_every",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Increment Every",
+   "reqd": 1
+  },
+  {
+   "fieldname": "increment_uom",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Increment UOM",
+   "options": "\nMonth\nYear",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "increment_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Increment Type",
+   "options": "\nPercent\nAmount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "increment_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Increment Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rule_effective_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Rule Effective From"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-13 08:29:36.007416",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Lease Increment Rule",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
