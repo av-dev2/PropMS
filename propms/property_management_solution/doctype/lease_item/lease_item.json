@@ -31,6 +31,13 @@
    "options": "Item"
   },
   {
+   "fieldname": "property_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Property Unit",
+   "options": "Property"
+  },
+  {
    "columns": 1,
    "fieldname": "frequency",
    "fieldtype": "Select",

@@ -11,6 +11,13 @@ frappe.ui.form.on('Lease', {
 				]
 			};
 		});
+		frm.set_query("property_unit", "lease_item", function() {
+			return {
+				"filters": {
+					"company": frm.doc.company,
+				}
+			};
+		});
 		frm.set_query("property", function() {
 			return {
 				"filters": {
