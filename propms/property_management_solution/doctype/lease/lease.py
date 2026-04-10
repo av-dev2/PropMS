@@ -79,13 +79,6 @@ class Lease(Document):
 
             for prop in properties:
                 if (
-                    get_datetime(self.start_date)
-                    <= get_datetime(now())
-                    <= get_datetime(add_months(self.end_date, -3))
-                ):
-                    frappe.db.set_value("Property", prop, "status", "On Lease")
-                    frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
-                if (
                     self.skip_end_date == None
                 ):
                     if (
@@ -97,6 +90,13 @@ class Lease(Document):
                             "Property", prop, "status", "Off Lease in 3 Months"
                         )
                         frappe.msgprint(_(f'Property "{prop}" has now been set <b>Off Lease in 3 Months</b> for Lease "{self.name}"'))
+                    elif (
+                        get_datetime(self.start_date)
+                        <= get_datetime(now())
+                        <= get_datetime(add_months(self.end_date, -3))
+                    ):
+                        frappe.db.set_value("Property", prop, "status", "On Lease")
+                        frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
                 else:
                     frappe.db.set_value(
                         "Property", prop, "status", "On Lease"
