@@ -75,7 +75,7 @@ def makeInvoice(
             doc.delivery_date = doc.to_date
             if not doc.due_date or getdate(doc.due_date) < getdate(sales_order_date):
                 doc.due_date = sales_order_date
-                
+        doc.set_missing_values()
         if doc.doctype != "Sales Order":
             doc.insert()
         if doc.taxes_and_charges:
