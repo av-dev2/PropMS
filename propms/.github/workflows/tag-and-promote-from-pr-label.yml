@@ -31,9 +31,10 @@ jobs:
             const matchedLabels = labels.filter(label => mapping[label]);
 
             if (matchedLabels.length === 0) {
-              core.setFailed(
-                `No promote target label found. Add one of: ${Object.keys(mapping).join(", ")}`
+              core.info(
+                `No promote target label found. Skipping promotion. Add one of: ${Object.keys(mapping).join(", ")}`
               );
+              core.setOutput("should_promote", "false");
               return;
             }
 
@@ -46,16 +47,19 @@ jobs:
 
             const matchedLabel = matchedLabels[0];
 
+            core.setOutput("should_promote", "true");
             core.setOutput("target_branch", mapping[matchedLabel]);
             core.setOutput("matched_label", matchedLabel);
 
       - name: Checkout merged commit
+        if: steps.target.outputs.should_promote == 'true'
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: 0
 
       - name: Read version from propms.__version__
+        if: steps.target.outputs.should_promote == 'true'
         id: version
         shell: bash
         run: |
@@ -79,11 +83,13 @@ jobs:
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Configure git user
+        if: steps.target.outputs.should_promote == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create and push version tag
+        if: steps.target.outputs.should_promote == 'true'
         run: |
           git fetch --tags
 
@@ -95,6 +101,7 @@ jobs:
           git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
           git push origin "${{ steps.version.outputs.tag }}"
 
-      - name: Push merged commit to target branch
+      - name: Promote merged commit to target branch
+        if: steps.target.outputs.should_promote == 'true'
         run: |
           git push origin HEAD:${{ steps.target.outputs.target_branch }}
