@@ -318,7 +318,7 @@
    "fieldname": "lease_status",
    "fieldtype": "Select",
    "label": "Lease Status",
-   "options": "\nActive\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating\nDraft\nTerminated"
+   "options": "\nDraft\nUpcoming\nActive\nExpired\nClosed\nNot Materialized\nRenewal to Previous Lease\nAdendum to Previous Lease\nVacating\nTerminated"
   },
   {
    "default": "0",
