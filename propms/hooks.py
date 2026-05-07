@@ -124,6 +124,9 @@ doc_events = {
 
 
 scheduler_events = {
+	"daily_long": [
+		"propms.property_management_solution.doctype.lease.lease.update_lease_statuses"
+	],
     "daily": [
         "propms.auto_custom.statusChangeBeforeLeaseExpire",
         "propms.auto_custom.statusChangeAfterLeaseExpire",
