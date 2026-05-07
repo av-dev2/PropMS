@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from frappe.utils import add_days, today, getdate, add_months, get_datetime, now
+from frappe.utils import add_days, today, getdate, add_months, get_datetime, now, nowdate
 from propms.auto_custom import app_error_log, makeInvoiceSchedule, getDateMonthDiff
 from frappe import _
 
@@ -108,6 +108,123 @@ class Lease(Document):
                         frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
+        self.set_lease_status()
+
+
+    def set_lease_status(self):
+        """
+        Set lease status on save.
+
+        Only system-controlled statuses are automatically changed:
+        Upcoming, Active, Expired.
+
+        All other statuses are considered manual and are not overwritten.
+        """
+
+        if self.lease_status not in get_system_controlled_statuses():
+            return
+
+        status = get_status_for_lease(self)
+
+        if status:
+            self.lease_status = status
+
+
+def get_system_controlled_statuses():
+    """
+    Statuses controlled by system automation.
+
+    Any lease_status outside this set is treated as manually controlled
+    and will not be overwritten by validate() or the daily scheduler.
+    """
+
+    return {"Upcoming", "Active", "Expired"}
+
+
+def update_lease_statuses():
+    """
+    Daily scheduler method.
+
+    Updates only system-controlled Lease statuses:
+    Upcoming, Active, Expired.
+
+    Uses frappe.db.set_value() to avoid full document save hooks,
+    and adds a timeline comment for audit visibility.
+    """
+
+    today_date = getdate(nowdate())
+    system_controlled_statuses = list(get_system_controlled_statuses())
+
+    leases = frappe.get_all(
+        "Lease",
+        fields=[
+            "name",
+            "lease_status",
+            "start_date",
+            "end_date",
+            "skip_end_date",
+        ],
+        filters=[
+            ["lease_status", "in", system_controlled_statuses],
+            ["docstatus", "<", 2],
+        ],
+    )
+
+    for lease in leases:
+        old_status = lease.lease_status
+        new_status = get_status_for_lease(lease, today_date)
+
+        if not new_status or new_status == old_status:
+            continue
+
+        frappe.db.set_value(
+            "Lease",
+            lease.name,
+            "lease_status",
+            new_status,
+            update_modified=True,
+        )
+
+        doc = frappe.get_doc("Lease", lease.name)
+        doc.add_comment(
+            "Info",
+            _(
+                "Lease Status automatically changed from {0} to {1} by daily scheduler."
+            ).format(old_status or "blank", new_status),
+        )
+
+    frappe.db.commit()
+
+
+def get_status_for_lease(lease, today_date=None):
+    """
+    Return calculated Lease Status.
+
+    Rules:
+    - Future start_date => Upcoming
+    - start_date <= today and end_date >= today => Active
+    - end_date < today => Expired
+    - If skip_end_date is checked, do not mark as Expired
+    - end_date equal to today remains Active until the next day
+    """
+
+    today_date = today_date or getdate(nowdate())
+
+    start_date = getdate(lease.start_date) if lease.start_date else None
+    end_date = getdate(lease.end_date) if lease.end_date else None
+    skip_end_date = bool(lease.skip_end_date)
+
+    if start_date and start_date > today_date:
+        return "Upcoming"
+
+    if not skip_end_date and end_date and end_date < today_date:
+        return "Expired"
+
+    if start_date and start_date <= today_date:
+        if skip_end_date or not end_date or end_date >= today_date:
+            return "Active"
+
+    return None
 
 
 @frappe.whitelist()
