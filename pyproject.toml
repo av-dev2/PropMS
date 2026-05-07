@@ -35,3 +35,6 @@ ignore = [
     "E402",
     "E741",
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "propms.__version__"}
