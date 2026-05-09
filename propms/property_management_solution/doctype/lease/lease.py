@@ -329,6 +329,7 @@ def make_lease_invoice_schedule(leasedoc):
                         "name",
                         "parent",
                         "lease_item",
+                        "schedule_start_date",
                         "qty",
                         "invoice_number",
                         "date_to_invoice",
