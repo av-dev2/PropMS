@@ -1,7 +1,7 @@
 name: Tag and promote from PR label
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
       - labeled
