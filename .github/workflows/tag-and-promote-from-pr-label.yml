@@ -99,18 +99,80 @@ jobs:
 
       - name: Create and push version tag
         if: steps.target.outputs.should_promote == 'true'
+        shell: bash
         run: |
           git fetch --tags
 
-          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "Tag ${{ steps.version.outputs.tag }} already exists. Skipping tag creation."
+          TAG="${{ steps.version.outputs.tag }}"
+          CURRENT_COMMIT="$(git rev-parse HEAD)"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            TAG_COMMIT="$(git rev-list -n 1 "$TAG")"
+
+            if [ "$TAG_COMMIT" != "$CURRENT_COMMIT" ]; then
+              echo "Tag $TAG already exists but points to $TAG_COMMIT, not current merged commit $CURRENT_COMMIT."
+              exit 1
+            fi
+
+            echo "Tag $TAG already exists and points to the current merged commit. Skipping tag creation."
             exit 0
           fi
 
-          git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
-          git push origin "${{ steps.version.outputs.tag }}"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+      - name: Create GitHub release with generated title and notes
+        if: steps.target.outputs.should_promote == 'true'
+        uses: actions/github-script@v8
+        env:
+          TAG_NAME: ${{ steps.version.outputs.tag }}
+          TARGET_COMMITISH: ${{ github.event.pull_request.merge_commit_sha }}
+        with:
+          script: |
+            const tagName = process.env.TAG_NAME;
+            const targetCommitish = process.env.TARGET_COMMITISH;
+            const { owner, repo } = context.repo;
+
+            try {
+              const existingRelease = await github.rest.repos.getReleaseByTag({
+                owner,
+                repo,
+                tag: tagName
+              });
+
+              core.info(
+                `Release already exists for ${tagName}: ${existingRelease.data.html_url}. Skipping release creation.`
+              );
+              return;
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
+
+            const generatedNotes = await github.rest.repos.generateReleaseNotes({
+              owner,
+              repo,
+              tag_name: tagName,
+              target_commitish: targetCommitish,
+              previous_tag_name: undefined
+            });
+
+            const release = await github.rest.repos.createRelease({
+              owner,
+              repo,
+              tag_name: tagName,
+              target_commitish: targetCommitish,
+              name: generatedNotes.data.name,
+              body: generatedNotes.data.body,
+              draft: false,
+              prerelease: false
+            });
+
+            core.info(`Created release: ${release.data.html_url}`);
 
       - name: Promote merged commit to target branch
         if: steps.target.outputs.should_promote == 'true'
+        shell: bash
         run: |
           git push origin HEAD:${{ steps.target.outputs.target_branch }}
