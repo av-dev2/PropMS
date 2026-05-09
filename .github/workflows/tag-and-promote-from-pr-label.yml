@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Determine target branch from PR labels
         id: target
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const labels = context.payload.pull_request.labels.map(label => label.name);
@@ -62,7 +62,7 @@ jobs:
 
       - name: Checkout merged commit
         if: steps.target.outputs.should_promote == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: 0
