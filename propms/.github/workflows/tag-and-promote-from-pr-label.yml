@@ -1,9 +1,10 @@
 name: Tag and promote from PR label
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
+      - labeled
 
 permissions:
   contents: write
@@ -11,7 +12,15 @@ permissions:
 
 jobs:
   tag-and-promote:
-    if: github.event.pull_request.merged == true
+    if: >
+      github.event.pull_request.merged == true &&
+      (
+        github.event.action == 'closed' ||
+        (
+          github.event.action == 'labeled' &&
+          startsWith(github.event.label.name, 'promote/')
+        )
+      )
     runs-on: ubuntu-latest
 
     steps:
@@ -70,7 +79,7 @@ jobs:
           init_file = Path("propms/__init__.py")
           content = init_file.read_text()
 
-          match = re.search(r'^__version__\s*=\s*[\"\']([^\"\']+)[\"\']', content, re.M)
+          match = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', content, re.M)
 
           if not match:
               raise SystemExit("Could not find __version__ in propms/__init__.py")
