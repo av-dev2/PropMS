@@ -506,3 +506,62 @@ def make_lease_invoice_schedule(leasedoc):
     except Exception as e:
         frappe.msgprint("Exception error! Check app error log.")
         app_error_log(frappe.session.user, str(e))
+
+
+@frappe.whitelist()
+def initiate_lease_renewal(source_lease_name):
+    # 1. Permission checks
+    if not any(r in frappe.get_roles() for r in ["Property Manager", "System Manager"]):
+        frappe.throw(_("You are not authorized to renew leases. Only Property Managers and System Managers can perform this action."), frappe.PermissionError)
+
+    # 2. Fetch source document
+    source_doc = frappe.get_doc("Lease", source_lease_name)
+
+    # 3. Status checks
+    if source_doc.lease_status not in ["Active", "Expired"]:
+        frappe.throw(_("Lease {0} is not eligible for renewal. Status must be Active or Expired.").format(source_lease_name), frappe.ValidationError)
+
+    # 4. Duplicate renewal check (ignoring terminated or aborted renewals)
+    duplicate_exists = frappe.db.exists("Lease", {
+        "renewed_from": source_lease_name,
+        "lease_status": ["not in", ["Not Materialized", "Terminated"]]
+    })
+    if duplicate_exists:
+        frappe.throw(_("A renewal lease already exists for this lease: {0}").format(duplicate_exists), frappe.ValidationError)
+
+    # 5. Clone Lease using standard frappe.copy_doc
+    new_lease = frappe.copy_doc(source_doc)
+    new_lease.set("lease_invoice_schedule", [])  # Clear old invoice schedules
+
+    # Set renewal reference fields
+    new_lease.renewed_from = source_lease_name
+    new_lease.lease_status = "Renewal to Previous Lease"
+    new_lease.renewal_initiated_by = frappe.session.user
+
+    # Calculate dates
+    if source_doc.end_date:
+        new_lease.start_date = add_days(source_doc.end_date, 1)
+        if source_doc.start_date:
+            duration_days = (getdate(source_doc.end_date) - getdate(source_doc.start_date)).days
+            new_lease.end_date = add_days(new_lease.start_date, duration_days)
+    else:
+        new_lease.start_date = today()
+
+    # Update valid_from date for items
+    for item in new_lease.lease_item:
+        item.valid_from = new_lease.start_date
+
+    # Insert and save the new Lease as draft
+    new_lease.insert(ignore_permissions=True)
+    
+    # Post a message/comment to the old lease with initiator and link details
+    comment_text = _("Lease renewal draft <a href='/app/Form/Lease/{0}'><b>{0}</b></a> has been initiated by <b>{1}</b> on <b>{2}</b>.").format(
+        new_lease.name,
+        frappe.session.user,
+        frappe.utils.formatdate(today())
+    )
+    source_doc.add_comment(text=comment_text)
+
+    return new_lease.name
+
+
