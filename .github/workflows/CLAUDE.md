@@ -1,64 +1,72 @@
-# Claude Code automation for PropMS.
-#
-# Two triggers:
-#   1. @claude mentions in issues/PR comments — ad hoc "fix this" requests.
-#   2. A nightly scheduled sweep — Claude checks for failing tests, fixes
-#      what it can, and opens a PR. Remove the schedule job if you'd
-#      rather trigger this manually at first.
-#
-# Setup required before this works:
-#   - Run `/install-github-app` from Claude Code in this repo, or install
-#     https://github.com/apps/claude manually (needs Contents, Issues,
-#     Pull requests: read & write).
-#   - Add ANTHROPIC_API_KEY as a repository secret.
+# CLAUDE.md — PropMS
 
-name: Claude Code Automation
+Guidance for Claude Code when working in this repository. Adjust the
+placeholders below (marked `TODO`) to match reality — this was scaffolded
+without direct access to the repo.
 
-on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  schedule:
-    - cron: "0 3 * * *"   # 03:00 UTC nightly — adjust or remove
+## What this app is
 
-jobs:
-  respond-to-mentions:
-    if: github.event_name != 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      issues: write
-    steps:
-      - uses: actions/checkout@v4
+PropMS is a custom Frappe app for property management, built by Aakvatech.
+Notable features: OpenImmo XML export (XSD schema, `openimmo_anid` field,
+`kontaktperson` sequence validation), property inspection workflows.
 
-      - uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Responds to @claude mentions in issue/PR comments automatically.
-          # CLAUDE.md in this repo drives conventions (branch names, commit
-          # style, PR target).
+- Frappe version: version-15 (frappe 15.100.1)
+- ERPNext: required implicitly — not declared in `hooks.py`
+  `required_apps`, but `doc_events` hooks directly into ERPNext
+  doctypes (Sales Invoice, Journal Entry Account, Material Request,
+  Sales Order). PropMS will not install/migrate without erpnext
+  present. Worth flagging upstream that this should be declared
+  formally.
+- A separate app, `openimmo_propms`, handles OpenImmo export — this is
+  NOT part of the PropMS app itself. If a bug touches OpenImmo XML
+  export, check whether it belongs in this repo or in openimmo_propms.
+- Python version: TODO (run `python --version` in the bench)
+- No `before_tests` hook is defined — tests run against standard
+  Frappe/ERPNext fixtures with no PropMS-specific test setup.
 
-  nightly-fix-sweep:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
+## Conventions
 
-      - uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: |
-            Run the PropMS test suite (see CLAUDE.md for how). If everything
-            passes, do nothing and exit. If there are failing tests, pick
-            the smallest coherent set of related failures, fix them,
-            add or update tests to cover the fix, create a branch following
-            the fix/<description> convention, commit with a conventional
-            commit message, and open a PR against develop with a clear
-            description of root cause and fix. Do not attempt to fix
-            everything in one PR — one focused PR per underlying issue.
-          claude_args: "--max-turns 30"
+### Branch naming
+- `fix/<short-description>` — bug fixes
+- `feat/<short-description>` — new features
+- `chore/<short-description>` — tooling, deps, non-functional changes
+
+### Commit messages
+Use Conventional Commits:
+```
+<type>(<scope>): <short summary>
+
+<optional body — why, not just what>
+```
+Types: `fix`, `feat`, `chore`, `refactor`, `test`, `docs`.
+Example: `fix(openimmo-export): handle missing kontaktperson sequence`
+
+### Pull requests
+- Target branch: `develop` (TODO — confirm; adjust if it's `main`)
+- Title mirrors the commit type/summary
+- Description includes: root cause, what changed, how it was tested
+- Never merge automatically — PRs are the human review checkpoint
+
+## Testing
+
+Frappe apps use `bench run-tests`. Tests live under
+`propms/**/doctype/<doctype_name>/test_<doctype_name>.py` using
+`FrappeTestCase`. If a bug fix touches a doctype or controller method
+without an existing test file, add one alongside the fix.
+
+Run locally:
+```bash
+bench --site <test-site> run-tests --app propms
+```
+
+## Working style
+
+- Before implementing, explore the relevant doctype/controller code and
+  any existing OpenImmo/inspection logic it touches.
+- Always verify a fix against the test suite (or a new test if none
+  exists) before committing — don't declare something fixed without
+  running it.
+- Keep changes scoped to the reported issue; don't refactor unrelated
+  code in the same PR.
+- Flag anything that looks like it needs an XSD schema update (OpenImmo
+  export) rather than silently changing validation logic.

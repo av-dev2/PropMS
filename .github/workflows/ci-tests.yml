@@ -1,11 +1,15 @@
 # CI: sets up a Frappe bench and runs the PropMS test suite.
 #
+# Confirmed against the dev bench: frappe 15.100.1, erpnext 15.98.1
+# (both on version-15). ERPNext is required — PropMS's doc_events hook
+# directly into ERPNext doctypes (Sales Invoice, Journal Entry Account,
+# Material Request, Sales Order) even though it's not declared in
+# hooks.py required_apps.
+#
 # TODO before this will run green:
-#   - Confirm FRAPPE_BRANCH matches what PropMS is built against.
-#   - If PropMS depends on ERPNext, uncomment the `bench get-app erpnext`
-#     step and set ERPNEXT_BRANCH.
 #   - Confirm the default/target branches under `on:` match your repo
 #     (develop vs main).
+#   - Confirm Python version (`python --version` in the bench).
 
 name: CI
 
@@ -16,8 +20,8 @@ on:
     branches: [develop, main]
 
 env:
-  FRAPPE_BRANCH: version-15   # TODO: confirm
-  # ERPNEXT_BRANCH: version-15   # TODO: uncomment if PropMS depends on erpnext
+  FRAPPE_BRANCH: version-15
+  ERPNEXT_BRANCH: version-15   # only used if the get-app step below is uncommented
 
 jobs:
   tests:
@@ -76,9 +80,9 @@ jobs:
             --skip-assets \
             --python "$(which python)"
 
-      # - name: Get ERPNext (uncomment if PropMS depends on it)
-      #   working-directory: frappe-bench
-      #   run: bench get-app erpnext --branch ${{ env.ERPNEXT_BRANCH }}
+      - name: Get ERPNext
+        working-directory: frappe-bench
+        run: bench get-app erpnext --branch ${{ env.ERPNEXT_BRANCH }}
 
       - name: Get PropMS
         working-directory: frappe-bench
