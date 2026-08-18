@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from frappe.utils import add_days, today, getdate, add_months, get_datetime, now, nowdate
+from frappe.utils import add_days, today, getdate, add_months, get_datetime, now, nowdate, cint
 from propms.auto_custom import app_error_log, makeInvoiceSchedule, getDateMonthDiff
 from frappe import _
 
@@ -50,6 +50,7 @@ class Lease(Document):
             # Lease Status Validation: Prevent multiple active leases per property
             if self.lease_status == "Active":
                 for prop in properties:
+                    max_allowed = cint(frappe.db.get_value("Property", prop, "max_active_leases")) or cint(frappe.db.get_single_value("Property Management Settings", "max_active_leases")) or 1
                     # Query for other non-draft leases for the same property
                     conflicting_leases = frappe.db.get_all(
                         "Lease",
@@ -61,21 +62,18 @@ class Lease(Document):
                         },
                         fields=["name", "end_date", "lease_status"],
                     )
-                    for lease in conflicting_leases:
-                        # If end_date is blank or in the future, block activation
-                        if not lease["end_date"] or getdate(lease["end_date"]) > getdate(
-                            self.start_date
-                        ):
-                            msg = _(
-                                "Cannot activate lease <b>{0}</b> for property <b>{1}</b>.<br>Conflicting lease: <b>{2} (Status: {3}, End Date: {4})</b>"
-                            ).format(
-                                self.name,
-                                prop,
-                                lease["name"],
-                                lease["lease_status"],
-                                lease["end_date"] or "None",
-                            )
-                            frappe.throw(msg, frappe.ValidationError)
+                    active_conflicts = [
+                        l for l in conflicting_leases
+                        if not l["end_date"] or getdate(l["end_date"]) >= getdate(self.start_date)
+                    ]
+                    if len(active_conflicts) >= max_allowed:
+                        msg = _(
+                            "Cannot activate lease <b>{0}</b> for property <b>{1}</b>.<br><br>"
+                            "• <b>Max Allowed Active Leases:</b> {2}<br>"
+                            "• <b>Currently Active Leases:</b> {3}<br><br>"
+                            "<i>Please contact Administrator if you need to increase the limit for this property.</i>"
+                        ).format(self.name, prop, max_allowed, len(active_conflicts))
+                        frappe.throw(msg, title=_("Active Lease Limit Exceeded"))
 
             for prop in properties:
                 if (
@@ -106,6 +104,8 @@ class Lease(Document):
                             "Property", prop, "status", "On Lease"
                         )
                         frappe.msgprint(_(f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'))
+        except frappe.ValidationError:
+            raise
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
         self.set_lease_status()
