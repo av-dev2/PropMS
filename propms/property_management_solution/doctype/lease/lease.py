@@ -92,8 +92,8 @@ class Lease(Document):
 						frappe.db.set_value("Property", prop, "status", "Off Lease in 3 Months")
 						frappe.msgprint(
 							_(
-								f'Property "{prop}" has now been set <b>Off Lease in 3 Months</b> for Lease "{self.name}"'
-							)
+								'Property "{0}" has now been set <b>Off Lease in 3 Months</b> for Lease "{1}"'
+							).format(prop, self.name)
 						)
 					elif self.lease_status != "Draft" and (
 						get_datetime(self.start_date)
@@ -103,16 +103,16 @@ class Lease(Document):
 						frappe.db.set_value("Property", prop, "status", "On Lease")
 						frappe.msgprint(
 							_(
-								f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'
-							)
+								'Property "{0}" has now been set <b>On Lease from Active</b> for Lease "{1}"'
+							).format(prop, self.name)
 						)
 				else:
 					if self.lease_status != "Draft":
 						frappe.db.set_value("Property", prop, "status", "On Lease")
 						frappe.msgprint(
 							_(
-								f'Property "{prop}" has now been set <b>On Lease from Active</b> for Lease "{self.name}"'
-							)
+								'Property "{0}" has now been set <b>On Lease from Active</b> for Lease "{1}"'
+							).format(prop, self.name)
 						)
 		except frappe.ValidationError:
 			raise
@@ -202,7 +202,8 @@ def update_lease_statuses():
 			),
 		)
 
-	frappe.db.commit()
+	# Scheduler entry point, not a document hook: the batch has to be durable.
+	frappe.db.commit()  # nosemgrep
 
 
 def get_status_for_lease(lease, today_date=None):
@@ -489,10 +490,10 @@ def make_lease_invoice_schedule(leasedoc):
 					idx += 1
 					invoice_date = add_days(invoice_period_end, 1)
 
-		frappe.msgprint("Completed making of invoice schedule.")
+		frappe.msgprint(_("Completed making of invoice schedule."))
 
 	except Exception as e:
-		frappe.msgprint("Exception error! Check app error log.")
+		frappe.msgprint(_("Exception error! Check app error log."))
 		app_error_log(frappe.session.user, str(e))
 
 
@@ -557,7 +558,7 @@ def initiate_lease_renewal(source_lease_name):
 
 	# Post a message/comment to the old lease with initiator and link details
 	comment_text = _(
-		"Lease renewal draft <a href='/app/Form/Lease/{0}'><b>{0}</b></a> has been initiated by <b>{1}</b> on <b>{2}</b>."
+		"Lease renewal draft <a href='/desk/lease/{0}'><b>{0}</b></a> has been initiated by <b>{1}</b> on <b>{2}</b>."
 	).format(new_lease.name, frappe.session.user, frappe.utils.formatdate(today()))
 	source_doc.add_comment(text=comment_text)
 
