@@ -21,7 +21,6 @@ app_license = "MIT"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 page_js = {
-	"pos": "property_management_solution/point_of_sale.js",
 	"point-of-sale": "property_management_solution/point_of_sale.js",
 }
 
