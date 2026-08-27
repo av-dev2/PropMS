@@ -45,6 +45,7 @@ class Lease(Document):
 			app_error_log(frappe.session.user, str(e))
 
 	def validate(self):
+		self.set_lease_status()
 		try:
 			properties = self.get_all_properties()
 			# Lease Status Validation: Prevent multiple active leases per property
@@ -118,7 +119,6 @@ class Lease(Document):
 			raise
 		except Exception as e:
 			app_error_log(frappe.session.user, str(e))
-		self.set_lease_status()
 
 	def set_lease_status(self):
 		"""
@@ -130,7 +130,7 @@ class Lease(Document):
 		All other statuses are considered manual and are not overwritten.
 		"""
 
-		if self.lease_status not in get_system_controlled_statuses():
+		if self.lease_status and self.lease_status not in get_system_controlled_statuses():
 			return
 
 		status = get_status_for_lease(self)
