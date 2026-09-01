@@ -51,12 +51,15 @@ def makeInvoice(
         else:
             # month qty is not fractional
             subs_end_date = add_days(add_months(schedule_start_date, qty), -1)
+        items_data = frappe.parse_json(items)
+        is_accrued = any(item.get("enable_deferred_revenue") for item in items_data)
         doc = frappe.get_doc(
             dict(
                 doctype=doctype,
                 company=company,
                 posting_date=today(),
-                items=json.loads(items),
+                set_posting_time=1 if is_accrued else 0,
+                items=items_data,
                 customer=str(customer),
                 due_date=getDueDate(today(), str(customer)),
                 currency=currency,
