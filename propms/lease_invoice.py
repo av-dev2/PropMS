@@ -53,15 +53,16 @@ def makeInvoice(
             subs_end_date = add_days(add_months(schedule_start_date, qty), -1)
         items_data = frappe.parse_json(items)
         is_accrued = any(item.get("enable_deferred_revenue") for item in items_data)
+        invoice_posting_date = date if (is_accrued and date) else today()
         doc = frappe.get_doc(
             dict(
                 doctype=doctype,
                 company=company,
-                posting_date=today(),
+                posting_date=invoice_posting_date,
                 set_posting_time=1 if is_accrued else 0,
                 items=items_data,
                 customer=str(customer),
-                due_date=getDueDate(today(), str(customer)),
+                due_date=getDueDate(invoice_posting_date, str(customer)),
                 currency=currency,
                 lease=lease,
                 lease_item=lease_item,
