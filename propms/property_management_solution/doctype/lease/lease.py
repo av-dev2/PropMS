@@ -46,6 +46,7 @@ class Lease(Document):
 
 	def validate(self):
 		self.set_lease_status()
+		self.validate_days_to_invoice_in_advance()
 		try:
 			properties = self.get_all_properties()
 			# Lease Status Validation: Prevent multiple active leases per property
@@ -119,6 +120,28 @@ class Lease(Document):
 			raise
 		except Exception as e:
 			app_error_log(frappe.session.user, str(e))
+
+	def validate_days_to_invoice_in_advance(self):
+		"""Prevent changing 'Days to Invoice in Advance' once invoices have been generated."""
+		if not self.is_new() and self.has_value_changed("days_to_invoice_in_advance"):
+			has_generated_invoices = any(
+				row.invoice_number or row.sales_order_number for row in (self.lease_invoice_schedule or [])
+			)
+			if not has_generated_invoices:
+				has_generated_invoices = frappe.db.exists(
+					"Lease Invoice Schedule",
+					{
+						"parent": self.name,
+						"invoice_number": ["is", "set"],
+					},
+				)
+			if has_generated_invoices:
+				frappe.throw(
+					_(
+						"Cannot change 'Days to Invoice in Advance' after invoices have been generated for this Lease."
+					),
+					title=_("Field Read Only"),
+				)
 
 	def set_lease_status(self):
 		"""
