@@ -51,14 +51,18 @@ def makeInvoice(
         else:
             # month qty is not fractional
             subs_end_date = add_days(add_months(schedule_start_date, qty), -1)
+        items_data = frappe.parse_json(items)
+        is_accrued = any(item.get("enable_deferred_revenue") for item in items_data)
+        invoice_posting_date = date if (is_accrued and date) else today()
         doc = frappe.get_doc(
             dict(
                 doctype=doctype,
                 company=company,
-                posting_date=today(),
-                items=json.loads(items),
+                posting_date=invoice_posting_date,
+                set_posting_time=1 if is_accrued else 0,
+                items=items_data,
                 customer=str(customer),
-                due_date=getDueDate(today(), str(customer)),
+                due_date=getDueDate(invoice_posting_date, str(customer)),
                 currency=currency,
                 lease=lease,
                 lease_item=lease_item,
@@ -153,6 +157,8 @@ def leaseInvoiceAutoCreate():
             ],
             order_by="parent, paid_by, invoice_item_group, date_to_invoice, currency, lease_item",
         )
+        if not lease_invoice:
+            return
         # frappe.msgprint("Lease being generated for " + str(lease_invoice))
         row_num = 1  # to identify the 1st line of the list
         prev_parent = ""
@@ -223,7 +229,25 @@ def leaseInvoiceAutoCreate():
             item_json["rate"] = invoice_item.rate
             item_json["cost_center"] = getCostCenter(invoice_item.parent)
             item_json["withholding_tax_rate"] = invoice_item.tax
-            # item_json["enable_deferred_revenue"] = 1 # Set it to true
+
+            # Fetch deferred revenue configuration from Item Master and Item Defaults / Company
+            item_doc = frappe.get_cached_doc("Item", invoice_item.lease_item)
+            if item_doc.enable_deferred_revenue:
+                item_json["enable_deferred_revenue"] = 1
+                company = frappe.get_value("Lease", invoice_item.parent, "company")
+                deferred_account = (
+                    frappe.get_cached_value(
+                        "Item Default",
+                        {"parent": invoice_item.lease_item, "company": company},
+                        "deferred_revenue_account",
+                    )
+                    or frappe.get_cached_value("Company", company, "default_deferred_revenue_account")
+                )
+                if deferred_account:
+                    item_json["deferred_revenue_account"] = deferred_account
+            else:
+                item_json["enable_deferred_revenue"] = 0
+
             item_json["service_start_date"] = str(invoice_item.schedule_start_date)
             if invoice_item.qty != int(invoice_item.qty):
                 # it means the last invoice for the lease that may have fraction of months
